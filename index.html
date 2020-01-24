@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Click-to-call WebComponent</title>
+    <script
+      async
+      defer
+      src="dist/ctc.js"
+      data-uri="sip:<USERNAME>@<PBX_URL>"
+      data-user="<USERNAME>"
+      data-password="<PASSWORD>"
+      data-socket="wss://<PBX_WEBSOCKET_URL>"
+      data-callto="sip:<NUMBER_TO_CALL>@<PBX_URL>"
+      data-color="#1db954"
+      data-position="left"
+      data-text="⌚ We are waiting for your call!"
+    ></script>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        text-transform: uppercase;
+        color: #cecece;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Click-to-call example</h1>
+  </body>
+</html>
