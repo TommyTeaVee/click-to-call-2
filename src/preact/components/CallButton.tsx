@@ -2,7 +2,7 @@ import { h, JSX } from 'preact' // lgtm [js/unused-local-variable]
 import classnames from 'classnames'
 
 import { useMemo } from 'preact/hooks'
-import { SpeechBuble } from '.'
+import { SpeechBuble } from '../components'
 import { callButtonStyles as styles } from './styles'
 import { CALL_STATES, CallState } from '../callStates'
 
