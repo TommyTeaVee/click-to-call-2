@@ -4,9 +4,10 @@ import { useJssip, useObserver, useBeforeUnload } from './hooks'
 import { createAudioPlayer } from './audioPlayer'
 import { CallButton } from './components'
 import { CALL_STATES } from './callStates'
+import ringtone from '../../assets/ringbacktone.wav'
 
 const soundMap = {
-  ringing: { filename: 'https://cdn.ipex.cz/sounds/ringbacktone.wav', volume: 1.0 }
+  ringing: { filename: ringtone, volume: 1.0 }
 }
 const audioPlayer = createAudioPlayer(soundMap)
 

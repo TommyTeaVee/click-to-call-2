@@ -25,7 +25,7 @@ export default {
     multiEntry({ exports: false }),
     url({
       limit: 50 * 1024,
-      publicPath: '/assets/',
+      publicPath: '/assets',
       fileName: '[name][extname]',
       include: [
         '**/*.jpg',
@@ -34,7 +34,8 @@ export default {
         '**/*.css',
         '**/*.eot',
         '**/*.ttf',
-        '**/*.woff'
+        '**/*.woff',
+        '**/*.wav'
       ],
       destDir: path.join(__dirname, 'dist/assets')
     }),

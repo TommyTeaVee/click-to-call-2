@@ -22,4 +22,8 @@ declare module '*.woff' {
   const content: string
   export default content
 }
+declare module '*.wav' {
+  const content: string
+  export default content
+}
 declare module 'preact-custom-element'
