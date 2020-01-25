@@ -1,10 +1,10 @@
-import { h, JSX } from 'preact'
+import { h, JSX } from 'preact' // lgtm [js/unused-local-variable]
 
 import { useJssip, useObserver, useBeforeUnload } from './hooks'
 import { createAudioPlayer } from './audioPlayer'
 import { CallButton } from './components'
 import { CALL_STATES } from './callStates'
-import ringtone from '../../assets/ringbacktone.wav'
+import ringtone from '../../assets/ringtone.wav'
 
 const soundMap = {
   ringing: { filename: ringtone, volume: 1.0 }

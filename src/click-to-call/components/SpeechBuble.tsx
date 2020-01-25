@@ -1,4 +1,4 @@
-import { h, JSX } from 'preact'
+import { h, JSX } from 'preact' // lgtm [js/unused-local-variable]
 
 interface SpeechBubleProps {
   text: string
