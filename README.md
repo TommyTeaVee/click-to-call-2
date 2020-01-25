@@ -71,7 +71,7 @@ After project is built paste this code snippet into website `<head />` tag:
 
 ## Customizing automatic run
 
-Current version is developed with running script immediately after its load with `data-` attributes. You can modify this behavior in `src/index.ts` file.
+Current version is developed with running script immediately after its load with `data-` attributes. You can modify this behavior in `src/click-to-call.ts` file.
 
 ## License
 
