@@ -2,7 +2,7 @@
   "name": "ctc-webcomponent",
   "version": "1.0.0",
   "description": "Click-to-Call button powered by WebRTC and JsSIP",
-  "main": "dist/bundle.min.js",
+  "main": "dist/c2c.min.js",
   "scripts": {
     "dev": "rollup -wc",
     "build": "env NODE_ENV=production rollup -c"
