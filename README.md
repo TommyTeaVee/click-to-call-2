@@ -66,12 +66,29 @@ After project is built paste this code snippet into website `<head />` tag:
 >
 </script>
 ```
-
 > **Do not forget**: Update `src` path if you will be using different folder structure!
+
+
+#### `c2c` API
+You can initialize Click-To-Call button on your own.
+##### c2c.init([config])
+```
+c2c.init({
+    uri: 'sip:myusername@<pbx.hostname.com>',
+    user: 'myusername',
+    password: 'mypassword',
+    socket: 'wss://pbx.websockethostname.com',
+    callto: 'sip:callto@<pbx.hostname.com>',
+    color: 'green',
+    position: 'left',
+    text: 'Call us!'
+})
+```
+
 
 ## Customizing automatic run
 
-Current version is developed with running script immediately after its load with `data-` attributes. You can modify this behavior in `src/click-to-call.ts` file.
+Current version is developed with running script immediately after its load if script contains required `data-` attributes. You can modify this behavior in `src/click-to-call.ts` file.
 
 ## License
 
