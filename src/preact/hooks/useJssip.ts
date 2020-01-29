@@ -19,7 +19,12 @@ interface JsSIPConfig {
   displayName?: string
 }
 
-type UseJssip = [JsSIPState, (uri: string) => void, () => void, any]
+interface RTCState {
+  session: JsSIP.RTCSession | null
+  stream: MediaStream | null
+}
+
+type UseJssip = [JsSIPState, (uri: string) => void, () => void, RTCState]
 
 const generateSipConfig = ({
   uri,
@@ -42,17 +47,20 @@ const HANG_UP_DELAY = 3000
 
 export const useJssip = (configuration: JsSIPConfig): UseJssip => {
   const [jssipUA, setJsSIP] = useState<JsSIP.UA | null>(null)
-  const [session, setSession] = useState<any>(null)
+  const [rtc, setRTC] = useState<RTCState>({
+    session: null,
+    stream: null
+  })
   const [state, setState] = useState<JsSIPState>({
     isRegistered: false,
     callState: CALL_STATES.FREE
   })
 
   const endSession = (type: string, cause?: string): void => {
-    if (type === 'failed') {
-      console.log('[CTC] Session ended:', cause)
-    }
-    setSession(null)
+    setRTC({
+      session: null,
+      stream: null
+    })
     setState(state => ({
       ...state,
       callState: CALL_STATES.CALL_END
@@ -65,7 +73,14 @@ export const useJssip = (configuration: JsSIPConfig): UseJssip => {
         })),
       HANG_UP_DELAY
     )
+    console.log('[C2C] Session ended:', cause || 'hangup')
   }
+
+  const handleRemoteStream = (stream: MediaStream | null): void =>
+    setRTC(state => ({
+      ...state,
+      stream
+    }))
 
   const makeCall = (uri: string): void => {
     if (jssipUA === null) return
@@ -88,7 +103,10 @@ export const useJssip = (configuration: JsSIPConfig): UseJssip => {
         ...state,
         callState: CALL_STATES.CONNECTING
       }))
-      setSession(session)
+      setRTC(state => ({
+        ...state,
+        session
+      }))
     })
     session.on('progress', () =>
       setState(state => ({
@@ -104,9 +122,14 @@ export const useJssip = (configuration: JsSIPConfig): UseJssip => {
     )
     session.on('failed', ({ cause }: { cause: string }) => endSession('failed', cause))
     session.on('ended', () => endSession('ended'))
+
+    // Handle RTCPeerConnection (audio stream)
+    session.connection.addEventListener('addstream', (event: MediaStreamEvent) =>
+      handleRemoteStream(event.stream)
+    )
   }
 
-  const hangup = (): void => session !== null && session.terminate()
+  const hangup = (): boolean | void => rtc.session !== null && rtc.session.terminate()
 
   useEffect(() => {
     const jssipUA = new JsSIP.UA(generateSipConfig(configuration))
@@ -123,5 +146,5 @@ export const useJssip = (configuration: JsSIPConfig): UseJssip => {
     jssipUA.start()
   }, [])
 
-  return [state, makeCall, hangup, session]
+  return [state, makeCall, hangup, rtc]
 }
