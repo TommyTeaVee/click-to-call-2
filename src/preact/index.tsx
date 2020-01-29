@@ -1,8 +1,8 @@
-import { h, JSX } from 'preact' // lgtm [js/unused-local-variable]
+import { h, Fragment, JSX } from 'preact' // lgtm [js/unused-local-variable]
 
 import { useJssip, useObserver, useBeforeUnload } from './hooks'
 import { createAudioPlayer } from './audioPlayer'
-import { CallButton } from './components'
+import { CallButton, Audio } from './components'
 import { CALL_STATES } from './callStates'
 import ringtone from '../../assets/ringtone.wav'
 
@@ -29,7 +29,7 @@ const ClickToCall = ({
   text,
   ...sipConfig
 }: ClickToCallProps): JSX.Element => {
-  const [{ isRegistered, callState }, makeCall, hangupCall, session] = useJssip(sipConfig)
+  const [{ isRegistered, callState }, makeCall, hangupCall, rtc] = useJssip(sipConfig)
   const isRinging = callState === CALL_STATES.RINGING
 
   useObserver(callState, () => {
@@ -39,25 +39,22 @@ const ClickToCall = ({
     }
   })
 
-  useBeforeUnload(session)
+  useBeforeUnload(rtc.session)
 
-  const handleClick = (): void => {
-    if (session) {
-      hangupCall()
-    } else {
-      makeCall(callto)
-    }
-  }
+  const handleClick = (): void => (rtc.session ? hangupCall() : makeCall(callto))
 
   return (
-    <CallButton
-      callState={callState}
-      color={color}
-      isRegistered={isRegistered}
-      position={position}
-      text={text}
-      onClick={handleClick}
-    />
+    <Fragment>
+      <Audio stream={rtc.stream || null} />
+      <CallButton
+        callState={callState}
+        color={color}
+        isRegistered={isRegistered}
+        position={position}
+        text={text}
+        onClick={handleClick}
+      />
+    </Fragment>
   )
 }
 

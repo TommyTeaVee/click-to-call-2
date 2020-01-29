@@ -15,17 +15,17 @@ window.c2c = (function(document): object {
   const requiredParams = ['uri', 'user', 'password', 'socket', 'callto']
   const currentScript = document.currentScript
 
-  function attach(dataset: C2CConfig): void {
+  function attach(config: C2CConfig): void {
+    if (typeof config !== 'object') return
+
     // Skip rendering if button is already attached
     if (document.querySelector('x-clicktocall')) return
 
-    if (!dataset || dataset.constructor.name !== 'Object') return
-
     // Check dataset contains all required params
-    if (requiredParams.every(key => dataset[key] !== undefined)) {
+    if (requiredParams.every(key => config[key] !== undefined)) {
       registerCustomElement(ClickToCall, 'x-clicktocall')
       const ctc = document.createElement('x-clicktocall')
-      Object.entries(dataset).forEach(([key, value]) => value && ctc.setAttribute(key, value))
+      Object.entries(config).forEach(([key, value]) => value && ctc.setAttribute(key, value))
       document.body.appendChild(ctc)
     } else {
       console.log(
