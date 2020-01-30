@@ -1,5 +1,7 @@
 import { h, JSX } from 'preact' // lgtm [js/unused-local-variable]
-import { useRef, useEffect } from 'preact/hooks'
+import { useRef } from 'preact/hooks'
+
+import { useObserver } from '../hooks'
 
 interface AudioProps {
   stream: MediaStream | null
@@ -8,14 +10,19 @@ interface AudioProps {
 const Audio = ({ stream }: AudioProps): JSX.Element => {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  useEffect(() => {
+  useObserver(stream, () => {
     const audioEl = audioRef.current
 
-    if (audioEl !== null) {
+    if (audioEl === null) return
+
+    if (stream) {
       audioEl.srcObject = stream
       audioEl.play().catch(err => console.error('[C2C] Audio error', err))
+    } else {
+      audioEl.pause()
+      audioEl.currentTime = 0
     }
-  }, [stream])
+  })
 
   return <audio ref={audioRef} id="c2c-audio" />
 }
