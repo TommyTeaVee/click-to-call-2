@@ -136,7 +136,7 @@ const callButtonStyles = {
     }
     & > .icon {
       z-index: 2;
-      font-size: 1.5rem;
+      font-size: 22px;
       color: #fff;
     }
 
