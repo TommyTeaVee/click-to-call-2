@@ -8,7 +8,7 @@ import { CALL_STATES, CallState } from '../callStates'
 
 interface CallButton {
   callState: CallState
-  isRegistered?: boolean
+  isRegistered: boolean
   text?: string
   color?: string
   position?: string

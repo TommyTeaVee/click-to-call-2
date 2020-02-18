@@ -2,7 +2,7 @@ import registerCustomElement from 'preact-custom-element'
 import { ClickToCall } from './preact'
 
 interface CustomWindow extends Window {
-  c2c: object
+  c2c: C2C
 }
 
 declare const window: CustomWindow
