@@ -138,6 +138,7 @@ const callButtonStyles = {
       z-index: 2;
       font-size: 22px;
       color: #fff;
+      transform: translateY(-2px);
     }
 
     & > .answered-wave {

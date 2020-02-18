@@ -1,22 +1,8 @@
 import registerCustomElement from 'preact-custom-element'
 import { ClickToCall } from './preact'
 
-interface CustomWindow extends Window {
-  c2c: object
-}
-
-declare const window: CustomWindow
-
-interface C2CConfig {
-  [key: string]: string | undefined
-}
-
-interface C2C {
-  init: (config: C2CConfig) => void
-}
-
-window.c2c = (function(document): C2C {
-  const REQUIRED_PARAMS = ['uri', 'user', 'password', 'socket', 'callto']
+// Browser IIFE
+;(function(document): void {
   const currentScript = document.currentScript
 
   const isMobile = (): boolean => /Mobi|Android/i.test(navigator.userAgent)
@@ -25,39 +11,25 @@ window.c2c = (function(document): C2C {
       item => item in window
     )
 
-  function render(config: C2CConfig): void {
-    if (!isWebRTCSupported() || isMobile() || typeof config !== 'object') {
-      return console.error(
-        '[C2C] WebRTC is not supported in your browser or you are using a mobile version of browser'
-      )
-    }
-
-    // Skip rendering if button is already attached
-    if (document.querySelector('x-clicktocall')) return
-
-    // Check dataset contains all required params
-    if (REQUIRED_PARAMS.every(key => config[key] !== undefined)) {
-      registerCustomElement(ClickToCall, 'x-clicktocall')
-      const ctc = document.createElement('x-clicktocall')
-      Object.entries(config).forEach(([key, value]) => value && ctc.setAttribute(key, value))
-      document.body.appendChild(ctc)
-    } else {
-      console.log(
-        `[C2C] You need to provide all required parameters: ${REQUIRED_PARAMS.join(
-          ','
-        )}. Add data attributes to script or use c2c.init() function.`
-      )
-    }
+  if (!isWebRTCSupported() || isMobile()) {
+    return console.error(
+      '[C2C] WebRTC is not supported in your browser or you are using a mobile version of browser'
+    )
   }
 
-  if (currentScript && currentScript.dataset) {
-    if (Object.keys(currentScript.dataset).length) {
-      // Try to render button with provided data attributes
-      render(currentScript.dataset)
-    }
-  }
+  // Skip rendering if button is already attached
+  if (!document.querySelector('x-clicktocall')) {
+    registerCustomElement(ClickToCall, 'x-clicktocall')
+    const ctc = document.createElement('x-clicktocall')
 
-  return {
-    init: (config: C2CConfig): void => render(config)
+    if (currentScript && currentScript.dataset) {
+      const attributes = Object.entries(currentScript.dataset)
+
+      if (attributes.length) {
+        attributes.forEach(([key, value]) => value && ctc.setAttribute(key, value))
+      }
+    }
+
+    document.body.appendChild(ctc)
   }
 })(document)

@@ -6,29 +6,20 @@ import { CallButton, Audio } from './components'
 import { CALL_STATES } from './callStates'
 import ringtone from '../../assets/ringtone.wav'
 
+const sipConfig = JSON.parse(window.atob('__BUNDLE_CONFIG__'))
 const soundMap = {
   ringing: { filename: ringtone, volume: 1.0 }
 }
 const audioPlayer = createAudioPlayer(soundMap)
 
-export interface ClickToCallProps {
-  uri: string
-  user: string
-  socket: string
-  password: string
+interface ClickToCallProps {
   callto: string
-  position?: string
-  text?: string
-  color?: string
+  color: string
+  position: 'left' | 'right'
+  text: string
 }
 
-const ClickToCall = ({
-  callto,
-  color,
-  position,
-  text,
-  ...sipConfig
-}: ClickToCallProps): JSX.Element => {
+const ClickToCall = ({ callto, color, position, text }: ClickToCallProps): JSX.Element => {
   const [{ isRegistered, callState }, makeCall, hangupCall, rtc] = useJssip(sipConfig)
   const isRinging = callState === CALL_STATES.RINGING
 
@@ -48,10 +39,10 @@ const ClickToCall = ({
       <Audio stream={rtc.stream || null} />
       <CallButton
         callState={callState}
-        color={color}
+        color={color || '#1877F1'}
         isRegistered={isRegistered}
-        position={position}
-        text={text}
+        position={position || 'right'}
+        text={text || 'Call us!'}
         onClick={handleClick}
       />
     </Fragment>

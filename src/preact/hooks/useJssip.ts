@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'preact/hooks'
-import JsSIP from 'jssip'
 import 'webrtc-adapter'
+import JsSIP from 'jssip'
+import { useEffect, useState } from 'preact/hooks'
 
 import { CALL_STATES, CallState } from '../callStates'
 
@@ -31,7 +31,7 @@ const generateSipConfig = ({
   user,
   password,
   socket,
-  displayName = `ctc-${Date.now()}`
+  displayName = 'Volani z webu'
 }: JsSIPConfig): JsSIP.UserAgentConfiguration => ({
   uri,
   password,
@@ -83,50 +83,56 @@ export const useJssip = (configuration: JsSIPConfig): UseJssip => {
     }))
 
   const makeCall = (uri: string): void => {
-    if (jssipUA === null) return
-    const session = jssipUA.call(uri, {
-      pcConfig: {
-        iceServers: []
-      },
-      mediaConstraints: {
-        audio: true,
-        video: false
-      },
-      rtcOfferConstraints: {
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: false
-      }
-    })
+    if (jssipUA === null || !navigator.mediaDevices) return
 
-    session.on('connecting', () => {
-      setState(state => ({
-        ...state,
-        callState: CALL_STATES.CONNECTING
-      }))
-      setRTC(state => ({
-        ...state,
-        session
-      }))
-    })
-    session.on('progress', () =>
-      setState(state => ({
-        ...state,
-        callState: CALL_STATES.RINGING
-      }))
-    )
-    session.on('accepted', () =>
-      setState(state => ({
-        ...state,
-        callState: CALL_STATES.ANSWERED
-      }))
-    )
-    session.on('failed', ({ cause }: { cause: string }) => endSession('failed', cause))
-    session.on('ended', () => endSession('ended'))
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(() => {
+        const session = jssipUA.call(uri, {
+          pcConfig: {
+            iceServers: []
+          },
+          mediaConstraints: {
+            audio: true,
+            video: false
+          },
+          rtcOfferConstraints: {
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: false
+          }
+        })
 
-    // Handle RTCPeerConnection (audio stream)
-    session.connection.addEventListener('addstream', (event: MediaStreamEvent) =>
-      handleRemoteStream(event.stream)
-    )
+        session.on('connecting', () => {
+          setState(state => ({
+            ...state,
+            callState: CALL_STATES.CONNECTING
+          }))
+          setRTC(state => ({
+            ...state,
+            session
+          }))
+        })
+        session.on('progress', () =>
+          setState(state => ({
+            ...state,
+            callState: CALL_STATES.RINGING
+          }))
+        )
+        session.on('accepted', () =>
+          setState(state => ({
+            ...state,
+            callState: CALL_STATES.ANSWERED
+          }))
+        )
+        session.on('failed', ({ cause }: { cause: string }) => endSession('failed', cause))
+        session.on('ended', () => endSession('ended'))
+
+        // Handle RTCPeerConnection (audio stream)
+        session.connection.addEventListener('addstream', (event: MediaStreamEvent) =>
+          handleRemoteStream(event.stream)
+        )
+      })
+      .catch(error => console.error('[C2C]', error))
   }
 
   const hangup = (): boolean | void => rtc.session !== null && rtc.session.terminate()

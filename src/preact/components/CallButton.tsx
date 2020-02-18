@@ -8,19 +8,19 @@ import { CALL_STATES, CallState } from '../callStates'
 
 interface CallButton {
   callState: CallState
-  isRegistered?: boolean
-  text?: string
-  color?: string
-  position?: string
+  isRegistered: boolean
+  text: string
+  color: string
+  position: string
   onClick(): void
 }
 
 const CallButton = ({
   isRegistered,
   callState,
-  text = 'You can call us!',
-  color = '#1877F1',
-  position = 'right',
+  text,
+  color,
+  position,
   onClick
 }: CallButton): JSX.Element => {
   const callButtonClass = useMemo(() => styles.createCallButtonClass(color, position), [
