@@ -1,23 +1,10 @@
 import registerCustomElement from 'preact-custom-element'
 import { ClickToCall } from './preact'
 
-interface CustomWindow extends Window {
-  c2c: C2C
-}
-
-declare const window: CustomWindow
-
-interface C2CConfig {
-  [key: string]: string | undefined
-}
-
-interface C2C {
-  init: (config: C2CConfig) => void
-}
+import { C2C, C2CConfig } from './types'
 
 window.c2c = (function(document): C2C {
   const REQUIRED_PARAMS = ['uri', 'user', 'password', 'socket', 'callto']
-  const currentScript = document.currentScript
 
   const isMobile = (): boolean => /Mobi|Android/i.test(navigator.userAgent)
   const isWebRTCSupported = (): boolean =>
@@ -28,19 +15,22 @@ window.c2c = (function(document): C2C {
   function render(config: C2CConfig): void {
     if (!isWebRTCSupported() || isMobile() || typeof config !== 'object') {
       return console.error(
-        '[C2C] WebRTC is not supported in your browser or you are using a mobile version of browser'
+        '[C2C] WebRTC is not supported in your browser or you are using a mobile version of browser.'
       )
     }
 
     // Skip rendering if button is already attached
-    if (document.querySelector('x-clicktocall')) return
+    if (document.querySelector('x-clicktocall')) {
+      return console.log('[C2C] Skipping rendering c2c button. Button is already rendered.')
+    }
 
     // Check dataset contains all required params
-    if (REQUIRED_PARAMS.every(key => config[key] !== undefined)) {
+    if (REQUIRED_PARAMS.every(key => key in config)) {
+      window.c2c._config = config
       registerCustomElement(ClickToCall, 'x-clicktocall')
-      const ctc = document.createElement('x-clicktocall')
-      Object.entries(config).forEach(([key, value]) => value && ctc.setAttribute(key, value))
-      document.body.appendChild(ctc)
+
+      const c2cElement = document.createElement('x-clicktocall')
+      document.body.appendChild(c2cElement)
     } else {
       console.log(
         `[C2C] You need to provide all required parameters: ${REQUIRED_PARAMS.join(
@@ -50,14 +40,13 @@ window.c2c = (function(document): C2C {
     }
   }
 
-  if (currentScript && currentScript.dataset) {
-    if (Object.keys(currentScript.dataset).length) {
-      // Try to render button with provided data attributes
-      render(currentScript.dataset)
-    }
-  }
-
   return {
-    init: (config: C2CConfig): void => render(config)
+    init: (config: C2CConfig): void => {
+      if (document.readyState === 'complete') {
+        render(config)
+      } else {
+        document.addEventListener('DOMContentLoaded', () => render(config))
+      }
+    }
   }
 })(document)

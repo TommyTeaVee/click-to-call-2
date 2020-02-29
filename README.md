@@ -18,7 +18,7 @@ The definition of click-to-call (which is sometimes called click-to-talk, or cli
 
 ## List of used technologies
 
-- [Preact + preact-custom-element](https://github.com/preactjs/preact)
+- [Preact](https://github.com/preactjs/preact)
 - [TypeScript](https://github.com/microsoft/TypeScript)
 - [JsSIP](https://github.com/versatica/JsSIP)
 - [Rollup](https://github.com/rollup/rollup)
@@ -44,37 +44,22 @@ Production build is generated using:
 npm run build
 ```
 
-into `dist/ctc.min.js`.
+into `dist/c2c.min.js`.
 
 ## Using on webpage
 
 After project is built paste this code snippet into website `<head />` tag:
 
-> **View** `index.html`
-
 ```
-<script
-      async
-      defer
-      src="dist/ctc.min.js"
-      data-uri="sip:<USERNAME>@<PBX_URL>"
-      data-user="<USERNAME>"
-      data-password="<PASSWORD>"
-      data-socket="wss://<PBX_WEBSOCKET_URL>"
-      data-callto="sip:<NUMBER_TO_CALL>@<PBX_URL>"
-      <!-- data-color="green"  -->  Custom color
-      <!-- data-position="left"  -->  Custom position ('right' is default)
-      <!-- data-text="Call us!"  -->  Custom bubble text
->
-</script>
+<script src="dist/c2c.min.js"></script>
 ```
 
 > **Do not forget**: Update `src` path if you will be using different folder structure!
 
 #### `c2c` API
-You can initialize Click-To-Call button on your own.
 
 ##### c2c.init([config])
+To render click-to-call button, call `init` function in your JavaScript code.
 ```
 c2c.init({
     uri: 'sip:myusername@<pbx.hostname.com>',
@@ -82,19 +67,14 @@ c2c.init({
     password: 'mypassword',
     socket: 'wss://pbx.websockethostname.com',
     callto: 'sip:callto@<pbx.hostname.com>',
-    color: 'green',
-    position: 'left',
-    text: 'Call us!'
+    color?: 'green',
+    position?: 'left',
+    text?: 'Call us!'
 })
 ```
 
-## Customizing automatic run
-
-Current version is developed with running script immediately after its load if script contains required `data-` attributes. You can modify this behavior in `src/click-to-call.ts` file.
-
 ## Compatibility
+Click-to-call widget is rendered only in WebRTC compatible browsers. Current version does not support mobile browsers.
 
-Current version does not support any mobile devices. Rendering is skipped due to WebRTC compatibility also on Internet Explorer browser. 
 ## License
-
 [MIT](https://github.com/cubase/call-to-webrtc/blob/master/LICENSE.md)

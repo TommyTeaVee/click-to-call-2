@@ -27,9 +27,9 @@ export const createAudioPlayer = <T extends SoundsMap>(soundMap: T): AudioPlayer
         sound.pause()
         sound.currentTime = 0.0
         sound.loop = loop
-        sound.play().catch(() => console.error(`[AUDIO] Error during playing file '${name}'`))
+        sound.play()
       } catch (error) {
-        console.error(`[AUDIO] Sound '${name}' cannot be played`)
+        console.error(`[AUDIO] Sound '${name}' cannot be played`, error)
       }
     },
     stopAll(): void {
@@ -39,7 +39,7 @@ export const createAudioPlayer = <T extends SoundsMap>(soundMap: T): AudioPlayer
           audio.currentTime = 0.0
         })
       } catch (error) {
-        console.error(`[AUDIO] Error while stopping sounds`)
+        console.error(`[AUDIO] Error while stopping sounds`, error)
       }
     }
   }

@@ -15,9 +15,9 @@ import path from 'path'
 const isDev = process.env.NODE_ENV !== 'production'
 
 export default {
-  input: './src/click-to-call.ts',
+  input: './src/c2c.ts',
   output: {
-    file: isDev ? 'dist/ctc.js' : 'dist/ctc.min.js',
+    file: isDev ? 'dist/c2c.js' : 'dist/c2c.min.js',
     format: 'iife'
   },
   plugins: [
