@@ -12,7 +12,7 @@ interface CallButton {
   text?: string
   color?: string
   position?: string
-  onClick(): void
+  onClick(event: MouseEvent): void
 }
 
 const CallButton = ({
@@ -21,7 +21,8 @@ const CallButton = ({
   text = 'You can call us!',
   color = '#1877F1',
   position = 'right',
-  onClick
+  onClick,
+  ...props
 }: CallButton): JSX.Element => {
   const callButtonClass = useMemo(() => styles.createCallButtonClass(color, position), [
     color,
@@ -44,6 +45,7 @@ const CallButton = ({
         ended: isHungup
       })}
       onClick={onClick}
+      {...props}
     >
       <i className="icon">{isFree ? 'phone_call' : 'phone_hangup'}</i>
       {isAnswered && <div className="answered-wave" />}

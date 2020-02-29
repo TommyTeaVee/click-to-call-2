@@ -1,5 +1,5 @@
 {
-  "name": "ctc-webcomponent",
+  "name": "c2c-webrtc",
   "version": "1.0.1",
   "description": "Click-to-Call button powered by WebRTC and JsSIP",
   "main": "dist/c2c.min.js",

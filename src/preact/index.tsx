@@ -6,31 +6,27 @@ import { CallButton, Audio } from './components'
 import { CALL_STATES } from './callStates'
 import ringtone from '../../assets/ringtone.wav'
 
+import { C2CConfig } from '../types'
+
 const soundMap = {
   ringing: { filename: ringtone, volume: 1.0 }
 }
 const audioPlayer = createAudioPlayer(soundMap)
 
-export interface ClickToCallProps {
-  uri: string
-  user: string
-  socket: string
-  password: string
-  callto: string
-  position?: string
-  text?: string
-  color?: string
+const getConfig = (): C2CConfig => {
+  if (!window.c2c || !window.c2c._config) {
+    throw new Error('[C2C] Missing configuration.')
+  }
+
+  return window.c2c._config
 }
 
-const ClickToCall = ({
-  callto,
-  color,
-  position,
-  text,
-  ...sipConfig
-}: ClickToCallProps): JSX.Element => {
+const ClickToCall = (): JSX.Element => {
+  const { callto, position, text, color, ...sipConfig } = getConfig()
   const [{ isRegistered, callState }, makeCall, hangupCall, rtc] = useJssip(sipConfig)
   const isRinging = callState === CALL_STATES.RINGING
+
+  const handleClick = (): void => (rtc.session ? hangupCall() : makeCall(callto))
 
   useObserver(callState, () => {
     audioPlayer.stopAll()
@@ -41,11 +37,9 @@ const ClickToCall = ({
 
   useBeforeUnload(rtc.session)
 
-  const handleClick = (): void => (rtc.session ? hangupCall() : makeCall(callto))
-
   return (
     <Fragment>
-      <Audio stream={rtc.stream || null} />
+      <Audio stream={rtc.stream} />
       <CallButton
         callState={callState}
         color={color}

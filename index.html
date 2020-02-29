@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Click-to-Call WebComponent</title>
-    <script
-      async
-      defer
-      src="dist/ctc.js"
-      data-uri="sip:<USERNAME>@<PBX_URL>"
-      data-user="<USERNAME>"
-      data-password="<PASSWORD>"
-      data-socket="wss://<PBX_WEBSOCKET_URL>"
-      data-callto="sip:<NUMBER_TO_CALL>@<PBX_URL>"
-      data-color="#1db954"
-      data-position="left"
-      data-text="⌚ We are waiting for your call!"
-    ></script>
+    <script src="dist/c2c.js"></script>
+    <script>
+      window.c2c.init({
+        uri: 'sip:<USERNAME>@<PBX_URL>',
+        user: '<USERNAME>',
+        password: '<PASSWORD>',
+        socket: 'wss://<PBX_WEBSOCKET_URL>',
+        callto: 'sip:<CALLTO>@<PBX_URL>',
+        color: '#1db954',
+        position: 'left',
+        text: '⌚ We are waiting for your call!'
+      })
+    </script>
     <style>
       html {
         height: 100%;

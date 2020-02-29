@@ -31,7 +31,7 @@ const generateSipConfig = ({
   user,
   password,
   socket,
-  displayName = `ctc-${Date.now()}`
+  displayName = `c2c-${Date.now()}`
 }: JsSIPConfig): JsSIP.UserAgentConfiguration => ({
   uri,
   password,
@@ -73,7 +73,7 @@ export const useJssip = (configuration: JsSIPConfig): UseJssip => {
         })),
       HANG_UP_DELAY
     )
-    console.log('[C2C] Session ended:', cause || 'hangup')
+    console.log(`[C2C] Session ${type}:`, cause || 'hangup')
   }
 
   const handleRemoteStream = (stream: MediaStream | null): void =>
